@@ -2,9 +2,9 @@
   {
     "id": 1,
     "name": "Jak",
-    "age": 23,
-    "email": "jak@gmail.com",
-    "password": "102050"
+    "age": "35",
+    "email": "jakjak@gmail.com",
+    "password": "161918"
   },
   {
     "id": 2,
@@ -47,5 +47,19 @@
     "age": 23,
     "email": "khalid@gmail.com",
     "password": "145154"
+  },
+  {
+    "id": 8,
+    "name": "Karma",
+    "age": "10",
+    "email": "Karma@gmail.com",
+    "password": "1147852"
+  },
+  {
+    "id": 9,
+    "name": "Alias",
+    "age": "15",
+    "email": "alias@gmail.com",
+    "password": "171819"
   }
 ]

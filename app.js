@@ -4,6 +4,8 @@ const fs = require("fs");
 const path = "./data.json";
 
 const server = http.createServer((req, res) => {
+  const [, rout, userEmail] = req.url.split("/");
+
   if (req.url === "/getstudents" && req.method === "GET") {
     fs.readFile(path, "utf8", (err, data) => {
       if (err) console.log("Error", err);
@@ -18,35 +20,29 @@ const server = http.createServer((req, res) => {
     });
 
     req.on("end", () => {
-      let newStudent = JSON.parse(body);
-      students.push(newStudent);
-      //Sort Students with id
-      students.sort((a, b) => a.id - b.id);
-      //
+      let { id, name, age, email, password } = JSON.parse(body);
+
+      id = students.length + 1;
+      students.push({ id, name, age, email, password });
+
       fs.writeFileSync(path, JSON.stringify(students));
-      res.end(JSON.stringify(newStudent));
+      res.end(JSON.stringify({ id, name, age, email, password }));
     });
     res.writeHead(201, { "Content-Type": "application/json" });
     // res.end("Student added Successfully");
-  } else if (req.url === "/deletestudent" && req.method === "DELETE") {
+  } else if (rout === "deletestudent" && userEmail && req.method === "DELETE") {
     let students = JSON.parse(fs.readFileSync(path, "utf8"));
 
-    let body = ""; //id
-    req.on("data", (chunk) => {
-      body += chunk.toString();
-    });
-
     req.on("end", () => {
-      let removeStudent = JSON.parse(body);
       students = students.filter((student) => {
-        return student.id !== removeStudent.id;
+        return student.email !== userEmail;
       });
 
       fs.writeFileSync(path, JSON.stringify(students));
       // res.end(JSON.stringify(removeStudent));
     });
     res.end("Student deleted Successfully");
-  } else if (req.url === "/updatestudent" && req.method === "PUT") {
+  } else if (rout === "updatestudent" && userEmail && req.method === "PUT") {
     let students = JSON.parse(fs.readFileSync(path, "utf8"));
 
     let body = "";
@@ -55,10 +51,16 @@ const server = http.createServer((req, res) => {
     });
 
     req.on("end", () => {
-      let student = JSON.parse(body);
+      let { name, age, email, password } = JSON.parse(body);
       students = students.map((currentStud) => {
-        if (currentStud.id === student.id) {
-          return { ...currentStud, ...student };
+        if (currentStud.email === userEmail) {
+          return {
+            id: currentStud.id,
+            name: name || currentStud.name,
+            age: age || currentStud.age,
+            email: email || currentStud.email,
+            password: password || currentStud.password,
+          };
         }
         return currentStud;
       });
@@ -67,6 +69,7 @@ const server = http.createServer((req, res) => {
     });
     res.end("Student updated Successfully");
   } else {
+    res.writeHead(404, { "Content-Type": "text/plain" });
     res.end("No Found Page");
   }
 });
