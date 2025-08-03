@@ -28,12 +28,3 @@ Each request updates the `data.json` file directly. The server handles routing m
 | PUT    | `/updatestudent/:email`              | Update student by email             |
 | DELETE | `/deletestudent/:email`              | Delete student by email             |
 
-####  Open your browser or use Postman to test the routes
-
-- http://localhost:3000/getstudent
-
-- http://localhost:3000/setstudent
-
-- http://localhost:3000/updatestudent/(email user)
-
-- http://localhost:3000/deletestudent/(email user)
